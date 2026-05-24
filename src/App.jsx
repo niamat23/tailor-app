@@ -3,14 +3,15 @@ import { db } from "./firebase";
 import {
   collection,
   addDoc,
-  getDocs,
-  deleteDoc,
   doc,
+  onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 
 export default function TailorMeasurementsApp() {
   const [clients, setClients] = React.useState([]);
   const [search, setSearch] = React.useState("");
+  const [editingId, setEditingId] = React.useState(null);
 
   const [form, setForm] = React.useState({
     name: "",
@@ -26,31 +27,33 @@ export default function TailorMeasurementsApp() {
     notes: "",
   });
 
-  // 🔵 جلب البيانات من Firebase
-  const fetchClients = async () => {
-    const data = await getDocs(collection(db, "clients"));
-
-    setClients(
-      data.docs.map((item) => ({
+  // 🔵 Realtime Firebase
+  React.useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "clients"), (snapshot) => {
+      const data = snapshot.docs.map((item) => ({
         id: item.id,
         ...item.data(),
-      }))
-    );
-  };
+      }));
+      setClients(data);
+    });
 
-  React.useEffect(() => {
-    fetchClients();
+    return () => unsubscribe();
   }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 🔵 إضافة زبونة
-  const addClient = async () => {
+  // 🔵 Add / Update
+  const saveClient = async () => {
     if (!form.name.trim()) return;
 
-    await addDoc(collection(db, "clients"), form);
+    if (editingId) {
+      await updateDoc(doc(db, "clients", editingId), form);
+      setEditingId(null);
+    } else {
+      await addDoc(collection(db, "clients"), form);
+    }
 
     setForm({
       name: "",
@@ -65,14 +68,12 @@ export default function TailorMeasurementsApp() {
       price: "",
       notes: "",
     });
-
-    fetchClients();
   };
 
-  // 🔵 حذف زبونة
-  const deleteClient = async (id) => {
-    await deleteDoc(doc(db, "clients", id));
-    fetchClients();
+  // 🔵 Start edit
+  const startEdit = (client) => {
+    setForm(client);
+    setEditingId(client.id);
   };
 
   const filteredClients = clients.filter((c) =>
@@ -117,10 +118,10 @@ export default function TailorMeasurementsApp() {
           </div>
 
           <button
-            onClick={addClient}
+            onClick={saveClient}
             className="mt-6 w-full bg-pink-500 text-white p-4 rounded-2xl font-bold"
           >
-            حفظ القياسات
+            {editingId ? "تحديث القياسات ✏️" : "حفظ القياسات"}
           </button>
         </div>
 
@@ -146,27 +147,31 @@ export default function TailorMeasurementsApp() {
 
                 <div className="flex justify-between">
                   <div>
-  <h2 className="font-bold text-xl">{client.name}</h2>
-  <p>{client.phone}</p>
+                    <h2 className="font-bold text-xl">{client.name}</h2>
+                    <p>{client.phone}</p>
 
-  <div className="text-sm mt-2 space-y-1">
-    <p>الصدر: {client.chest}</p>
-    <p>الخصر: {client.waist}</p>
-    <p>الورك: {client.hips}</p>
-    <p>الكتف: {client.shoulder}</p>
-    <p>طول الذراع: {client.armLength}</p>
-    <p>الطول: {client.length}</p>
-    <p>الكم: {client.sleeve}</p>
-    <p>الثمن: {client.price}</p>
-  </div>
-</div>
+                    <div className="text-sm mt-2 space-y-1">
+                      <p>الصدر: {client.chest}</p>
+                      <p>الخصر: {client.waist}</p>
+                      <p>الورك: {client.hips}</p>
+                      <p>الكتف: {client.shoulder}</p>
+                      <p>طول الذراع: {client.armLength}</p>
+                      <p>الطول: {client.length}</p>
+                      <p>الكم: {client.sleeve}</p>
+                      <p>الثمن: {client.price}</p>
+                    </div>
+                  </div>
 
-                  <button
-                    onClick={() => deleteClient(client.id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded-xl"
-                  >
-                    حذف
-                  </button>
+                  {/* زر التعديل فقط */}
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => startEdit(client)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded-xl"
+                    >
+                      تعديل ✏️
+                    </button>
+                  </div>
+
                 </div>
 
               </div>

@@ -159,6 +159,11 @@ export default function TailorMeasurementsApp() {
                       <p>الطول: {client.length}</p>
                       <p>الكم: {client.sleeve}</p>
                       <p>الثمن: {client.price}</p>
+                      {client.notes && (
+    <div className="mt-3 p-2 bg-pink-50 rounded-lg border border-pink-200">
+      <strong>الملاحظات:</strong> {client.notes}
+    </div>
+  )}
                     </div>
                   </div>
 

@@ -17,7 +17,9 @@ export default function TailorMeasurementsApp() {
     name: "",
     phone: "",
     chest: "",
+    chestHeight: "",
     waist: "",
+    waistHeight: "",
     hips: "",
     shoulder: "",
     armLength: "",
@@ -59,7 +61,9 @@ export default function TailorMeasurementsApp() {
       name: "",
       phone: "",
       chest: "",
+      chestHeight: "",
       waist: "",
+      waistHeight: "",
       hips: "",
       shoulder: "",
       armLength: "",
@@ -99,7 +103,9 @@ export default function TailorMeasurementsApp() {
             <input name="name" value={form.name} onChange={handleChange} placeholder="اسم الزبونة" className="border p-3 rounded-xl" />
             <input name="phone" value={form.phone} onChange={handleChange} placeholder="رقم الهاتف" className="border p-3 rounded-xl" />
             <input name="chest" value={form.chest} onChange={handleChange} placeholder="الصدر" className="border p-3 rounded-xl" />
+            <input name="chestHeight" value={form.chestHeight} onChange={handleChange} placeholder="ارتفاع الصدر" className="border p-3 rounded-xl"/>
             <input name="waist" value={form.waist} onChange={handleChange} placeholder="الخصر" className="border p-3 rounded-xl" />
+            <input name="waistHeight" value={form.waistHeight} onChange={handleChange} placeholder="ارتفاع الخصر" className="border p-3 rounded-xl"/>
             <input name="hips" value={form.hips} onChange={handleChange} placeholder="الورك" className="border p-3 rounded-xl" />
             <input name="shoulder" value={form.shoulder} onChange={handleChange} placeholder="الكتف" className="border p-3 rounded-xl" />
             <input name="armLength" value={form.armLength} onChange={handleChange} placeholder="طول الذراع" className="border p-3 rounded-xl" />
@@ -147,35 +153,36 @@ export default function TailorMeasurementsApp() {
 
                 <div className="flex justify-between">
                   <div>
-                    <h2 className="font-bold text-xl">{client.name}</h2>
-                    <p>{client.phone}</p>
+                      <h2 className="font-bold text-xl">{client.name}</h2>
+                     <p>{client.phone}</p>
 
-                    <div className="text-sm mt-2 space-y-1">
-                      <p>الصدر: {client.chest}</p>
-                      <p>الخصر: {client.waist}</p>
-                      <p>الورك: {client.hips}</p>
-                      <p>الكتف: {client.shoulder}</p>
-                      <p>طول الذراع: {client.armLength}</p>
-                      <p>الطول: {client.length}</p>
-                      <p>الكم: {client.sleeve}</p>
-                      <p>الثمن: {client.price}</p>
-                      {client.notes && (
-    <div className="mt-3 p-2 bg-pink-50 rounded-lg border border-pink-200">
-      <strong>الملاحظات:</strong> {client.notes}
-    </div>
-  )}
-                    </div>
-                  </div>
+                      <div className="text-sm mt-2 space-y-1">
+                        <p>الصدر: {client.chest || "🌷"}</p>
+                        <p>ارتفاع الصدر: {client.chestHeight || "🌷"}</p>
+                        <p>الخصر: {client.waist || "🌷"}</p>
+                        <p>ارتفاع الخصر: {client.waistHeight || "🌷"}</p>
+                        <p>الورك: {client.hips || "🌷"}</p>
+                        <p>الكتف: {client.shoulder || "🌷"}</p>
+                        <p>طول الذراع: {client.armLength || "🌷"}</p>
+                        <p>الطول: {client.length || "🌷"}</p>
+                        <p>الكم: {client.sleeve || "🌷"}</p>
+                        <p>الثمن: {client.price || "🌷"}</p>
 
-                  {/* زر التعديل فقط */}
-                  <div className="flex flex-col gap-2">
-                    <button
-                      onClick={() => startEdit(client)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded-xl"
-                    >
-                      تعديل ✏️
-                    </button>
-                  </div>
+                       <div className="mt-3 p-2 bg-pink-50 rounded-lg border border-pink-200">
+                               <strong>الملاحظات:</strong> {client.notes || "🌷"}
+                         </div>
+                       </div>
+                      </div>
+
+{/* زر التعديل فقط */}
+                    <div className="flex flex-col gap-2">
+                           <button
+                                    onClick={() => startEdit(client)}
+                                      className="bg-blue-500 text-white px-3 py-1 rounded-xl"
+                                   >
+                                تعديل ✏️
+                             </button>
+            </div>
 
                 </div>
 
